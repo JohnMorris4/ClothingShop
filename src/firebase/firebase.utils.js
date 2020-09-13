@@ -16,7 +16,7 @@ const config = {
     measurementId: "G-E888PWZMP3"
 };
 
-export const createUserProfileDoc = async (userAuth, additionalData) => {
+export const createUserProfileDocument = async (userAuth, additionalData) => {
     if(!userAuth) return;
 
     // console.log(firestore.doc(`users/${userAuth.uid}`))
@@ -82,10 +82,21 @@ export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
 //google auth
-const provider = new firebase.auth.GoogleAuthProvider();
-provider.setCustomParameters({ prompt: 'select_account'});
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account'});
+console.log(googleProvider)
+export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
+
+export const getCurrentUser  = () => {
+    return new Promise((resolve, reject) => {
+        const unsubscribe = auth.onAuthStateChanged(userAuth => {
+            unsubscribe();
+            resolve(userAuth);
+        }, reject )
+    })
+}
+
 
 export default firebase;
 
